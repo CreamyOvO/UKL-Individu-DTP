@@ -1,0 +1,14 @@
+<?php 
+$host = 'localhost';
+$db = 'db_musiclist';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch (PDOException $error) {
+    die("Koneksi gagal:( ".$error->getMessage());
+}
+?>
