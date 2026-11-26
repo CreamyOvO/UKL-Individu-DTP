@@ -22,6 +22,12 @@
     color: white;
     background-color: rgb(0, 142, 71);
     border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+#add:hover {
+    background-color: rgb(0, 108, 54);
+    cursor: pointer;
 }
 
 .form form select {

@@ -33,6 +33,13 @@ if(isset($_POST['edit'])) {
     $stmtEdit->execute(['status' => $status, 'id' => $id]);
 }
 
+if(isset($_POST['edit_click'])) {
+    $id = $_POST['id'];
+    $status = $_POST['status'];
+    $stmtEdit = $pdo->prepare("UPDATE music_playlist SET status = :status WHERE id = :id");
+    $stmtEdit->execute(['status' => $status, 'id' => $id]);
+}
+
 $playlistRaw = $pdo->prepare("SELECT p.id, p.name FROM user_playlist as up INNER JOIN playlist as p ON up.playlist_id = p.id INNER JOIN user as u ON up.user_id = u.id WHERE u.id = :id");
 $playlistRaw->execute(['id' => $sudahLogin]);
 $playlist = $playlistRaw->fetchAll(PDO::FETCH_ASSOC);
@@ -48,7 +55,7 @@ $playlist = $playlistRaw->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="topbar">
-        <h2>CreamyMusic.</h2>
+        <a href="index.php"><h2>CreamyMusic.</h2></a>
         <div class="desktop-nav">
             <nav>
                 <a href="index.php" class="selected"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
@@ -69,7 +76,7 @@ $playlist = $playlistRaw->fetchAll(PDO::FETCH_ASSOC);
             <div class="profile">
                 <?php if($sudahLogin): ?>
                     <div id="profile"></div>
-                    <form action="logout.php" method="post">
+                    <form action="logout.php" method="post" onclick="return confirm('Yakin mau Logout?')">
                         <input type="submit" name="logout" value="Logout" id="logout">
                     </form>
                 <?php else: ?>
@@ -151,7 +158,7 @@ $playlist = $playlistRaw->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= $song['music_name'] ?></td>
                             <td><?= $song['genre_name'] ?></td>
                             <td><?= $duration ?></td>
-                            <td><a href="<?= $song['url'] ?>">Click</a></td>
+                            <td><form action="index.php" method="post"></form><a href="<?= $song['url'] ?>"><input type="submit" name="edit_click" id="click" value="Click"></a> <input type="hidden" value="<?= $song['id'] ?>" name="id"> <input type="hidden" value="<?= $song['status'] ?>" name="status"></td>
                             <td>
                                 <?php if($song['status'] === 'unhear'): ?>
                                     <p class="unhear">Unhear</p>
@@ -173,7 +180,7 @@ $playlist = $playlistRaw->fetchAll(PDO::FETCH_ASSOC);
                                 </form>
                             </td>
                             <td>
-                                <form action="index.php" method="post">
+                                <form action="index.php" method="post" onclick="return confirm('Apakah mau hapus?')">
                                     <input type="submit" id="delete" value="Delete" name="delete">
                                     <input type="hidden" value="<?= $song['id'] ?>" name="id">
                                 </form>

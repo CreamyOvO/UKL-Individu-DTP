@@ -43,7 +43,7 @@ if(isset($_POST['submit'])) {
         <input type="text" name="username" id="username" placeholder="Username" required>
         <input type="password" name="password" id="password" placeholder="Password" required>
         <div class="checkbox">
-            <input type="checkbox" required>
+            <input type="checkbox">
             <label for="checkbox">Remember me</label>
         </div>
         <div class="submit">
