@@ -4,6 +4,7 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Montserrat';
+    overflow-x: hidden;
 }
 
 .topbar {
@@ -172,14 +173,19 @@ header {
     font-weight: 700;
 }
 
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
 table {
     margin-top: 24px;
     width: 100%;
+    border-collapse: collapse;
 }
 
-table, th, td {
+th, td {
     border: solid 2px darkgreen;
-    border-collapse: collapse;
     font-size: 18px;
 }
 
@@ -288,4 +294,82 @@ td a {
     font-weight: 700;
     background: none;
     font-size: 18px;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+.desktop-nav {
+    display: flex;
+    gap: 300px;
+}
+
+@media (max-width: 320px) {
+    .topbar {
+        padding: 12px 25px;
+    }
+
+    .topbar h2{
+        font-size: 16px;
+    }
+
+    .mobile-nav {
+        display: flex;
+        align-content: center;
+        color: white;
+        font-size: 24px;
+    }
+
+    .desktop-nav {
+        display: none;
+    }
+
+    .hero {
+        flex-direction: column;
+    }
+
+    .hero::before {
+        opacity: 50%;
+    }
+
+    .hero img {
+        width: 600px;
+        top: 120px;
+        left: -100px;
+    }
+
+    header {
+        margin-left: 0;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 12px;
+    }
+
+    #select {
+        font-size: 12px;
+    }
+
+    .select select {
+        font-size: 12px;
+    }
+    
+    .playlist {
+        padding: 0 25px;
+    }
+
+    .select a {
+        font-size: 12px;
+    }
+
+    footer p {
+        font-size: 12px;
+    }
 }

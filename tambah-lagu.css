@@ -1,15 +1,15 @@
-form {
+.form form {
     display: flex;
     flex-direction: column;
     padding: 20px 50px;
 }
 
-form label {
+.form form label {
     font-size: 18px;
     margin-bottom: 8px;
 }
 
-form input {
+.form form input {
     font-size: 18px;
     padding: 6px;
     margin-bottom: 12px;
@@ -24,7 +24,7 @@ form input {
     border-radius: 5px;
 }
 
-form select {
+.form form select {
     font-size: 18px;
     padding: 6px;
     margin-bottom: 12px;

@@ -1,6 +1,7 @@
 <?php 
 session_start();
 $sudahLogin = $_SESSION['id'] ?? '';
+$role = $_SESSION['role'] ?? '';
 require_once 'koneksi.php';
 
 $duration = 0;
@@ -8,11 +9,14 @@ $duration = 0;
 $stmt = $pdo->query("SELECT m.id as music_id, m.name as music_name, g.name as genre_name, m.duration, m.url, m.created_at FROM music as m JOIN genre as g on m.genre_id = g.id");
 $total = $stmt->rowCount();
 $music = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmtUser = $pdo->prepare("SELECT * FROM user WHERE id = :id");
+$stmtUser->execute(['id' => $sudahLogin]);
+$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
 
 if(isset($_POST['delete'])) {
-    $playlist_id = $_POST['id'];
+    $music_id = $_POST['music_id'];
     $stmtDelete = $pdo->prepare("DELETE FROM music WHERE id = :id");
-    $stmtDelete->execute(['id' => $playlist_id]);
+    $stmtDelete->execute(['id' => $music_id]);
     header("Location: music.php");
     exit;
 }
@@ -58,8 +62,20 @@ if(isset($_POST['delete'])) {
     </div>
     <main>
         <section class="playlist">
-            <h1>List Music</h1>
-            <p>There's <?= $total ?> Music in Database</p>
+            <div class="select">
+                <div class="info">
+                    <h1>List Music</h1>
+                    <p>There's <?= $total ?> Music in Database</p>
+                </div>
+                <?php if($user['role'] === 'admin'): ?>
+                <a href="tambah-lagu.php"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-music-note-list" viewBox="0 0 16 16">
+                    <path d="M12 13c0 1.105-1.12 2-2.5 2S7 14.105 7 13s1.12-2 2.5-2 2.5.895 2.5 2"/>
+                    <path fill-rule="evenodd" d="M12 3v10h-1V3z"/>
+                    <path d="M11 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 16 2.22V4l-5 1z"/>
+                    <path fill-rule="evenodd" d="M0 11.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5m0-4A.5.5 0 0 1 .5 7H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5m0-4A.5.5 0 0 1 .5 3H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5"/>
+                    </svg>Add Music</a>
+                <?php endif; ?>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -70,6 +86,10 @@ if(isset($_POST['delete'])) {
                         <th>Link</th>
                         <th>Created</th>
                         <th>Add to Playlist</th>
+                        <?php if($role === 'admin'): ?>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,6 +112,20 @@ if(isset($_POST['delete'])) {
                                     <input type="submit" id="add" value="Add+">
                                 </form>
                             </td>
+                            <?php if($role === 'admin'): ?>
+                                <td>
+                                    <form action="edit-lagu.php" method="post">
+                                        <input type="hidden" name="music_id" value="<?= $m['music_id'] ?>">
+                                        <input type="submit" value="Edit" id="edit" name="edit_old">
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="music.php" method="post">
+                                        <input type="hidden" value="<?= $m['music_id'] ?>" name="id">
+                                        <input type="submit" value="Delete" id="delete" name="delete">
+                                    </form>
+                                </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach;?>
                 </tbody>

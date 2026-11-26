@@ -12,7 +12,7 @@ if(isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $cek = $pdo->prepare("SELECT id, username, password FROM user WHERE username = :username");
+    $cek = $pdo->prepare("SELECT id, username, password, role FROM user WHERE username = :username");
     $cek->execute(['username' => $username]);
     $user = $cek->fetch(PDO::FETCH_ASSOC);
     if(!$user || !password_verify($password, $user['password'])) {
@@ -22,6 +22,7 @@ if(isset($_POST['submit'])) {
 
     $_SESSION['id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
+    $_SESSION['role'] = $user['role'];
 
     header("Location: index.php");
     exit;
