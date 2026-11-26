@@ -1,20 +1,24 @@
 <?php 
+session_start();
+$id = $_SESSION['id'] ?? '';
 require_once 'koneksi.php';
+
+$stmtPlaylist = $pdo->query("SELECT * FROM music_playlist");
+$musicPlaylist = $stmtPlaylist->fetchAll(PDO::FETCH_ASSOC);
+$playlist_id = [];
 
 if(isset($_POST['add'])) {
     $nama = $_POST['songname'];
     $genre = $_POST['genre'];
     $duration = $_POST['duration'];
     $link = $_POST['link'];
-    $playlist_id = $_POST['playlist'];
+    $playlist_id = $_POST['playlist'] ?? [];
     
     $pdo->beginTransaction();
     $stmt = $pdo->prepare("INSERT INTO music(name, genre_id, duration, url) values (:name, :genre_id, :duration, :link)");
     $stmt->execute(['name' => $nama, 'genre_id' => $genre, 'duration' => $duration, 'link' => $link]);
 
     $music_id = $pdo->lastInsertId();
-    $stmtPlaylistId = $pdo->prepare("INSERT INTO music_playlist(music_id, playlist_id) VALUES (:music_id, :playlist_id)");
-    $stmtPlaylistId->execute(['music_id' => $music_id, 'playlist_id' => $playlist_id]);
     $pdo->commit();
     header("Location: index.php");
     exit;
@@ -24,7 +28,8 @@ if(isset($_POST['add'])) {
 $stmtGenre = $pdo->query("SELECT * FROM genre");
 $genre = $stmtGenre->fetchAll(PDO::FETCH_ASSOC);
 
-$stmtPlaylist = $pdo->query("SELECT * FROM playlist");
+$stmtPlaylist = $pdo->prepare("SELECT p.id, p.name from user_playlist as up INNER JOIN user as u on up.user_id = u.id INNER JOIN playlist as p on up.playlist_id = p.id WHERE up.user_id = :id");
+$stmtPlaylist->execute(['id' => $id]);
 $playlist = $stmtPlaylist->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -41,9 +46,10 @@ $playlist = $stmtPlaylist->fetchAll(PDO::FETCH_ASSOC);
     <div class="topbar">
         <h2>CreamyMusic.</h2>
         <nav>
-            <a href="index.php">Beranda</a>
+            <a href="index.php">Home</a>
             <a href="playlist.php">Playlist</a>
-            <a href="#">Tambah</a>
+            <a href="music.php">Music</a>
+            <a href="tambah-lagu.php">Add</a>
         </nav>
     </div>
     <main>
@@ -64,12 +70,16 @@ $playlist = $stmtPlaylist->fetchAll(PDO::FETCH_ASSOC);
                 <label for="link">Song Link:</label>
                 <input type="text" id="link" name="link" required>
                 <label for="playlist">Playlist:</label>
-                <select name="playlist" id="playlist" required>
-                    <option value="#" selected disabled>--SELECT--</option>
-                    <?php foreach($playlist as $p):?>
-                        <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
+                <div class="checkbox">
+                <?php if(!empty($playlist)): ?>
+                    <?php foreach($playlist as $p):?> 
+                        <input type="checkbox" name="playlist[]" value="<?= $p['id'] ?>">
+                        <label for="playlist"><?= $p['name'] ?></label>
                     <?php endforeach; ?>
-                </select>
+                <?php else: ?>
+                    <a href="tambah-playlist.php">Add new Playlist</a>
+                <?php endif; ?>
+                </div>
                 <input type="submit" name="add" value="Add" id="add"> 
             </form>
         </section>

@@ -33,3 +33,20 @@ form select {
 .add {
     padding: 0 50px;
 }
+
+.checkbox {
+    display: flex;
+    flex-direction: row;
+    margin-top: 32px;
+    align-items: center;
+    gap: 6px;
+}
+
+.checkbox label {
+    font-size: 24px;
+}
+
+.checkbox input {
+    width: 24px;
+    height: 24px;
+}

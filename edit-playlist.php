@@ -30,10 +30,14 @@ $playlist = $stmtSelect->fetch(PDO::FETCH_ASSOC);
     <div class="topbar">
         <h2>CreamyMusic.</h2>
         <nav>
-            <a href="index.php">Beranda</a>
+            <a href="index.php">Home</a>
             <a href="playlist.php">Playlist</a>
-            <a href="tambah-lagu.php">Tambah</a>
+            <a href="music.php">Music</a>
+            <a href="tambah-lagu.php">Add</a>
         </nav>
+        <div class="profile">
+            <span></span>
+        </div>
     </div>
     <main>
         <section class="playlist">
